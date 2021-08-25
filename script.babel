@@ -1,0 +1,157 @@
+//with codepen.io
+import * as React from "https://cdn.skypack.dev/react@17.0.1";
+import * as ReactDOM from "https://cdn.skypack.dev/react-dom@17.0.1";
+import $ from "https://cdn.skypack.dev/jquery@3.6.0";
+
+//React:
+
+const QuotesList = [
+  {
+    quote:
+      "The greatest glory in living lies not in never falling, but in rising every time we fall",
+    author: "Nelson Mandela"
+  },
+  {
+    quote:
+      "If life were predictable it would cease to be life, and be without flavor.",
+    author: "Eleanor Roosevelt"
+  },
+  {
+    quote:
+      "If you look at what you have in life, you'll always have more. If you look at what you don't have in life, you'll never have enough",
+    author: "Oprah Winfrey"
+  },
+  {
+    quote: "The way to get started is to quit talking and begin doing",
+    author: "Walt Disney"
+  },
+  {
+    quote:
+      "Don't judge each day by the harvest you reap but by the seeds that you plant",
+    author: "Robert Louis Stevenson"
+  }
+];
+
+//Stateless component
+function SharingButtons(props) {
+  const CopyQuoteToClipboard = () => {
+    navigator.clipboard.writeText(props.contentToShare);
+  };
+  return (
+    <div className="d-inline-flex col justify-content-start">
+      <a
+        id="tweet-quote"
+        target="_blank"
+        href={
+          "https://twitter.com/intent/tweet?hashtags=quotes&related=freecodecamp&text=" +
+          props.contentToShare
+        }
+        className="btn btn-primary align-self-center col-6"
+      >
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a
+        target="_blank"
+        onClick={CopyQuoteToClipboard()}
+        className="btn btn-primary ms-2 align-self-center col-6"
+      >
+        <i className="fas fa-copy"></i>
+      </a>
+    </div>
+  );
+}
+
+//Main class component. We need work with state. Not Redux because the project isn't that complex
+class QuotePresenter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      quotes: QuotesList,
+      author: QuotesList[0].author,
+      quote: QuotesList[0].quote,
+      lastQuoteIndex: 0,
+      developer: "@thenablyn"
+    };
+
+    this.requestNewQuoteHandler = this.requestNewQuoteHandler.bind(this);
+  }
+
+  requestNewQuoteHandler() {
+    const Li =
+      this.state.lastQuoteIndex + 1 < this.state.quotes.length
+        ? this.state.lastQuoteIndex + 1
+        : 0;
+    const updateState = () => {
+      this.setState(
+        (prevState) => {
+          return {
+            lastQuoteIndex: Li,
+            quote: prevState.quotes[Li].quote,
+            author: prevState.quotes[Li].author
+          };
+        },
+        () => {
+          $("#quote-box").fadeIn("slow");
+        }
+      );
+    };
+    $("#quote-box").fadeOut("fast", () => {
+      updateState();
+    });
+  }
+
+  render() {
+    return (
+      <div className="d-flex flex-column justify-content-center align-content-center bg-primary">
+        <div
+          id="content"
+          className="container-fluid col-9 d-flex flex-column align-content-center"
+        >
+          <div
+            id="quote-box"
+            className="bg-light border rounded-2 border-5 border-light shadow p-3"
+          >
+            <p className="text-primary blockquote fs-2 fw-bold" id="text">
+              <i className="fa fa-quote-left me-2 fs-1"></i>
+              {this.state.quote}
+            </p>
+            <p id="author" className="text-end blockquote-footer">
+              {this.state.author}
+            </p>
+            <div
+              id="actionBox"
+              className="d-inline-flex flex-wrap justify-content-end col-12"
+            >
+              <div className="col-5 flex-fill">
+                <SharingButtons
+                  contentToShare={this.state.quote + " - " + this.state.author}
+                />
+              </div>
+
+              <button
+                id="new-quote"
+                className="btn btn-primary col-5"
+                onClick={this.requestNewQuoteHandler}
+              >
+                New Quote
+              </button>
+            </div>
+          </div>
+          <div id="developer" className="text-center m-2 text-white">
+            by{" "}
+            <a
+              className="text-light text-decoration-none"
+              href="https://www.freecodecamp.org"
+              target="_blank"
+            >
+              {this.state.developer}
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+//Render the wrapper component to a div element in body
+ReactDOM.render(<QuotePresenter />, document.getElementById("root"));
