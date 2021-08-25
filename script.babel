@@ -43,7 +43,7 @@ function SharingButtons(props) {
         id="tweet-quote"
         target="_blank"
         href={
-          "https://twitter.com/intent/tweet?hashtags=quotes&related=freecodecamp&text=" +
+          "https://twitter.com/intent/tweet?hashtags=quotes&text=" +
           props.contentToShare
         }
         className="btn btn-primary align-self-center col-6"
@@ -141,7 +141,7 @@ class QuotePresenter extends React.Component {
             by{" "}
             <a
               className="text-light text-decoration-none"
-              href="https://www.freecodecamp.org"
+              href="https://github.com/thenablyn"
               target="_blank"
             >
               {this.state.developer}
